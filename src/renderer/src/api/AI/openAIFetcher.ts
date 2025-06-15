@@ -1,14 +1,18 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
-import { sendPrompt } from '../clients/openAIClient'
+import { OpenAIPromptResponse, sendPrompt } from '../clients/openAIClient'
 
 type OpenAIPromptProps = {
   input: string
+  previousResponseId: string | null
 }
 
-export function useOpenAIPrompt({ input }: OpenAIPromptProps): UseQueryResult<string, Error> {
+export function useOpenAIPrompt({
+  input,
+  previousResponseId
+}: OpenAIPromptProps): UseQueryResult<OpenAIPromptResponse, Error> {
   return useQuery({
     queryKey: ['openai', input],
-    queryFn: () => sendPrompt(input),
+    queryFn: () => sendPrompt(input, previousResponseId),
     enabled: false
   })
 }

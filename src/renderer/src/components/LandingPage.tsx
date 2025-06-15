@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AITextBox } from './AITextBox'
-import { Message, Messages } from './Messages'
+import { Message, Messages, MessagingRole } from './Messages'
 
 export function LandingPage(): React.JSX.Element {
   const [question, setQuestion] = useState<string | null>(null)
@@ -12,30 +12,53 @@ export function LandingPage(): React.JSX.Element {
   const [initiated, setInitiated] = useState(!!messages)
 
   useEffect(() => {
-    const storedMessages = localStorage.getItem('messages')
-    if (storedMessages) {
-      setMessages(JSON.parse(storedMessages))
+    if (typing) {
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: crypto.randomUUID(),
+            role: 'assistant' as MessagingRole,
+            content: 'Thinking...',
+            timestamp: new Date()
+          }
+        ])
+      }, 500)
     }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem('messages', JSON.stringify(messages))
-  }, [messages])
+  }, [typing])
 
   useEffect(() => {
     if (!answer) return
-    setMessages((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), role: 'assistant', content: answer, timestamp: new Date() }
-    ])
+    setMessages((prev) => {
+      const newMessages = [
+        ...prev.slice(0, -1),
+        {
+          id: crypto.randomUUID(),
+          role: 'assistant' as MessagingRole,
+          content: answer,
+          timestamp: new Date()
+        }
+      ]
+      localStorage.setItem('messages', JSON.stringify(newMessages))
+      return newMessages
+    })
   }, [answer])
 
   useEffect(() => {
     if (!question) return
-    setMessages((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), role: 'user', content: question, timestamp: new Date() }
-    ])
+    setMessages((prev) => {
+      const newMessages = [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: 'user' as MessagingRole,
+          content: question,
+          timestamp: new Date()
+        }
+      ]
+      localStorage.setItem('messages', JSON.stringify(newMessages))
+      return newMessages
+    })
   }, [question])
 
   const handleNewChat = (): void => {
@@ -47,7 +70,7 @@ export function LandingPage(): React.JSX.Element {
     <div className="flex flex-col h-screen w-screen p-8">
       {initiated && (
         <button
-          className="px-2 py-1 bg-gray-200 text-black rounded-lg hover:bg-gray-300 cursor-pointer w-24 self-end text-sm"
+          className="px-2 py-1 bg-gray-200 text-black rounded-lg hover:bg-gray-300 cursor-pointer w-24 self-start text-sm"
           onClick={handleNewChat}
         >
           New chat
@@ -55,7 +78,7 @@ export function LandingPage(): React.JSX.Element {
       )}
       {initiated && <Messages messages={messages} />}
       <div
-        className={`flex flex-col ${initiated ? 'justify-end' : 'justify-center'} items-center h-full w-full gap-4`}
+        className={`flex flex-col ${initiated ? 'justify-end' : 'justify-center'} items-center w-full gap-4`}
       >
         {!initiated && <h1 className="text-3xl font-bold">Ask me anything...</h1>}
         <AITextBox
