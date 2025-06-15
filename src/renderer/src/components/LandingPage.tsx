@@ -67,7 +67,9 @@ export function LandingPage(): React.JSX.Element {
   }
 
   return (
-    <div className="flex flex-col h-screen w-screen p-8">
+    <div
+      className={`flex flex-col h-screen w-screen p-8 ${initiated ? 'justify-end' : 'justify-center'}`}
+    >
       {initiated && (
         <button
           className="px-2 py-1 bg-gray-200 text-black rounded-lg hover:bg-gray-300 cursor-pointer w-24 self-start text-sm"
@@ -77,9 +79,7 @@ export function LandingPage(): React.JSX.Element {
         </button>
       )}
       {initiated && <Messages messages={messages} />}
-      <div
-        className={`flex flex-col ${initiated ? 'justify-end' : 'justify-center'} items-center w-full gap-4`}
-      >
+      <div className={`flex flex-col 'justify-end' items-center w-full gap-4`}>
         {!initiated && <h1 className="text-3xl font-bold">Ask me anything...</h1>}
         <AITextBox
           setInitiated={setInitiated}
