@@ -1,10 +1,11 @@
+import { AITextBox } from './components/AITextBox'
+
 function App(): React.JSX.Element {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline text-red-500">
-        Hello world! I am some text. Tailwind is working.
-      </h1>
-    </>
+    <div className="flex flex-col items-center justify-center h-screen w-screen gap-4 px-16">
+      <h1 className="text-3xl font-bold">Ask me anything...</h1>
+      <AITextBox />
+    </div>
   )
 }
 
