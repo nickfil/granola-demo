@@ -10,8 +10,9 @@ export type Message = {
 }
 
 export function Messages({ messages }: { messages: Message[] }): React.JSX.Element {
+  console.log({ messages })
   return (
-    <div className="flex flex-col gap-4 w-full h-full pt-4">
+    <div className="flex flex-col gap-4 w-full h-full overflow-y-auto my-4">
       {messages.map((message) => (
         <ChatBubble key={message.id} role={message.role} content={message.content} />
       ))}
